@@ -53,7 +53,7 @@ namespace ConnectFour
         // Print formatted board in its current state
         public void PrintBoard(Board board)
         {
-            // Array to store each row in the board
+            // Array to store each formatted row in the board
             string[] rows = new string[board.Height];
             string bottomRow = "";
             int row = 0;
@@ -70,7 +70,7 @@ namespace ConnectFour
                 // Array to store all slots in that row
                 Slot[] rowSlots = new Slot[board.Width];
                 int column = 0;
-                // String to build formatted row string
+                // String to build formatted row
                 string printLine = "";
 
                 if (y.ToString().Length == 1)
@@ -82,14 +82,14 @@ namespace ConnectFour
                     printLine = " " + y + " | ";
                 }
                 
-                // Store all slots in for current row in rowSlots[] array
+                // Store all slots for current row in rowSlots[] array
                 foreach (char x in xAxis)
                 {
                     Slot currentSlot = new Slot(x, y);
                     rowSlots[column] = currentSlot;
                     column++;
                 }
-                // Append formatted version of each slot value to "printLine" row string
+                // Append formatted version of each slot value to row
                 foreach (Slot rowSlot in rowSlots)
                 {
                     Slot slot;
@@ -99,7 +99,7 @@ namespace ConnectFour
                     }
                 }
 
-                // Add formatted row string to array of rows
+                // Add formatted row to array of rows
                 rows[row] = printLine;
                 row++;
             }
@@ -119,7 +119,7 @@ namespace ConnectFour
             Console.WriteLine(bottomRow);
         }
 
-        // Display "Battle Commence" message and estbalish first move
+        // Display "Battle Commence" message and establish first move
         public void BeginGame(Game game)
         {
             Console.WriteLine("\n------ LET THE BATTLE COMMENCE ------\n\n" +
