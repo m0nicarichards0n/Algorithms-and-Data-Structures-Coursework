@@ -6,34 +6,26 @@ namespace ConnectFour
 {
     class Board
     {
-        public IDictionary<string, Slot> Slots = new Dictionary<string, Slot>();
+        private IDictionary<string, Slot> _slots = new Dictionary<string, Slot>();
         private int _height;
         private int _width;
 
         // Initialise empty board with custom height and width values (up to 26x26)
         public void InitBoard(int height, int width)
         {
-            if (height >=1 && height <=26
-                && width >= 1 && width <=26)
+            _height = height;
+            _width = width;
+
+            char[] xAxis = GetXAxis(width);
+            int[] yAxis = GetYAxis(height);
+
+            foreach (int y in yAxis)
             {
-                _height = height;
-                _width = width;
-
-                char[] xAxis = GetXAxis(width);
-                int[] yAxis = GetYAxis(height);
-
-                foreach (int y in yAxis)
+                foreach (char x in xAxis)
                 {
-                    foreach (char x in xAxis)
-                    {
-                        Slot slot = new Slot(x, y, 0);
-                        Slots.Add(slot.XCoordinate.ToString() + slot.YCoordinate, slot);
-                    }
+                    Slot slot = new Slot(x, y, 0);
+                    _slots.Add(slot.XCoordinate.ToString() + slot.YCoordinate, slot);
                 }
-            }
-            else
-            {
-                throw new Exception("Please only enter dimensions up to 26x26");
             }
         }
 
@@ -71,6 +63,11 @@ namespace ConnectFour
         public int Width
         {
             get => _width;
+        }
+
+        public IDictionary<string, Slot> Slots
+        {
+            get => _slots;
         }
     }
 }
