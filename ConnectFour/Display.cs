@@ -14,8 +14,14 @@ namespace ConnectFour
                                 "~*~*~*~*~*~ CONNECT FOUR ~*~*~*~*~*~\n" + 
                                 "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n" +
                                 "-------------------------------------\n\n" +
-                                "Welcome to Connect Four!\n\n");
-            
+                                "Welcome to Connect Four!\n\n"); 
+        }
+
+        public void GameHeader(Game game)
+        {
+            Console.WriteLine("\n------ LET THE BATTLE COMMENCE ------\n\n" +
+                                game.Players[0].Name + " VS " + game.Players[1].Name + "\n\n" +
+                                "(To make a move, just type the letter of the column you want to fill)\n");
         }
 
         // Get player names from user
@@ -30,9 +36,12 @@ namespace ConnectFour
         // Get height/width of board from user
         public int GetBoardSize(string message)
         {
-            Console.WriteLine(message);
             int input;
-            bool success = Int32.TryParse(Console.ReadLine(), out input);
+            bool success;
+
+            Console.WriteLine(message);
+            
+            success = Int32.TryParse(Console.ReadLine(), out input);
             if (success)
             {
                 if (input >=1 && input <=26)
@@ -119,39 +128,60 @@ namespace ConnectFour
             Console.WriteLine(bottomRow);
         }
 
-        // Display "Battle Commence" message and establish first move
+        // Display game heading info and establish who will make the first move
         public void BeginGame(Game game)
         {
-            Console.WriteLine("\n------ LET THE BATTLE COMMENCE ------\n\n" +
-                                game.Players[0].Name + " VS " + game.Players[1].Name + "\n");
+            // Display game header
+            GameHeader(game);
 
             // Pick the first player at random
             Random random = new Random();
-            int firstPlayer = random.Next(1, 2);
+            game.FirstPlayer = random.Next(1, 2);
+        }
 
-            Console.WriteLine(game.Players[firstPlayer].Name + " you are the chosen one! Make your first move...");
-
-
+        // Allow player to enter move and update board accordingly
+        public void PlayMove(Board board, Game game)
+        {
+            Player currentPlayer;
+            string input = "";
+            // If this is the first move...
+            if (game.Moves.Count == 0)
+            {
+                currentPlayer = game.Players[game.FirstPlayer];
+                // Get player's first move
+                Console.WriteLine("\n" + currentPlayer.Name + " you are the chosen one! Make the first move...");
+                input = Console.ReadLine();
+            }
+            // If this is not the first move...
+            else
+            {
+                // Establish who the next player is
+                currentPlayer = game.GetNextPlayer(game.Moves);
+                // Get next player's move
+                Console.WriteLine("\n" + currentPlayer.Name + ", your turn! Make your move...");
+                input = Console.ReadLine();
+            }
+            // Check move is valid
+            if (game.ValidMove(input, board))
+            {
+                // Add move to stack
+                Slot move = game.NextAvailableSlot(input, board);
+                game.MakeMove(move, currentPlayer, board);
+            }
+            else
+            {
+                throw new Exception("Sorry, that's not a valid move. Please enter a different move.");
+            }
         }
 
         // Remove the board from console and print latest version of board
-        public void UpdateBoard(Board board)
+        public void UpdateBoard(Board board, Game game)
         {
-            for(int i=0; i<(board.Height + 5); i++)
-            {
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                ClearConsoleLine();
-            }
-            PrintBoard(board);
-        }
+            Console.Clear();
+            Welcome();
+            GameHeader(game);
 
-        // Clear a line in console
-        public void ClearConsoleLine()
-        {
-            int cursorTop = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, cursorTop);
+            PrintBoard(board);
         }
     }
 }
