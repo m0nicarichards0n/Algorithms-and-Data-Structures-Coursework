@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Pastel;
 
 namespace ConnectFour
 {
@@ -104,7 +103,21 @@ namespace ConnectFour
                     Slot slot;
                     if (board.Slots.TryGetValue((rowSlot.XCoordinate.ToString() + rowSlot.YCoordinate), out slot))
                     {
-                        printLine += slot.Content + " | ";
+                        // Player 1 slots are yellow
+                        if (slot.Content == 1)
+                        {
+                            printLine += (slot.Content.ToString().Pastel("#FFDF00")) + " | ";
+                        }
+                        // Player 2 slots are red
+                        else if (slot.Content == 2)
+                        {
+                            printLine += (slot.Content.ToString().Pastel("#FF0700")) + " | ";
+                        }
+                        else
+                        {
+                            printLine += slot.Content + " | ";
+                        }
+                        
                     }
                 }
 
