@@ -9,6 +9,7 @@ namespace ConnectFour
             Board board = new Board();
             Display display = new Display();
             bool boardSizeValid = true;
+            bool moveValid = true;
 
             // Display welcome message
             display.Welcome();
@@ -43,12 +44,25 @@ namespace ConnectFour
 
             display.BeginGame(game);
             display.PrintBoard(board);
+            do
+            {
+
+                try
+                {
+                    display.PlayMove(board, game);
+                    display.UpdateBoard(board, game);
+                }
+                catch (Exception e)
+                {
+                    // Throw error message if invalid move is made
+                    Console.WriteLine(e.Message);
+                    moveValid = false;
+                }
+            }
+            // This while condition will eventually check for a win condition ("true == true" is just a placeholder)
+            while (!moveValid || true == true);
             
-            /*
-             * Created this method to update board in console:
-             * display.UpdateBoard(board);
-             * 
-             */
+            Console.ReadLine();
         }
     }
 }
