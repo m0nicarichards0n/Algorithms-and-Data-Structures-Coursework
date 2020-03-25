@@ -43,13 +43,13 @@ namespace ConnectFour
             success = Int32.TryParse(Console.ReadLine(), out input);
             if (success)
             {
-                if (input >=1 && input <=26)
+                if (input >=4 && input <=26)
                 {
                     return input;
                 }
                 else
                 {
-                    throw new Exception("Please enter a number between 1 and 26");
+                    throw new Exception("Please enter a number between 4 and 26");
                 }
             }
             else
@@ -169,7 +169,7 @@ namespace ConnectFour
             else
             {
                 // Establish who the next player is
-                currentPlayer = game.GetNextPlayer(game.Moves);
+                currentPlayer = game.NextPlayer();
                 // Get next player's move
                 Console.WriteLine("\n" + currentPlayer.Name + ", your turn! Make your move...");
                 input = Console.ReadLine();
@@ -195,6 +195,11 @@ namespace ConnectFour
             GameHeader(game);
 
             PrintBoard(board);
+        }
+
+        public void Winner(Player winner)
+        {
+            Console.WriteLine("\nCongratulations " + winner.Name + " you WIN !!!");
         }
     }
 }

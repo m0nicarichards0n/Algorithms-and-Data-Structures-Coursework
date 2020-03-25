@@ -20,7 +20,7 @@ namespace ConnectFour
 
             // Insantiate new game of players
             Game game = new Game(player1,player2);
-
+            bool winner = false;
             do
             {
                 try
@@ -42,15 +42,25 @@ namespace ConnectFour
 
             } while (!boardSizeValid);
 
+            // Display game information & pick 1st player at random
             display.BeginGame(game);
+            // Display Connect Four board
             display.PrintBoard(board);
             do
             {
 
                 try
                 {
+                    moveValid = true;
+                    // Allow current player to make move
                     display.PlayMove(board, game);
+                    // Update Connect Four board to display move made
                     display.UpdateBoard(board, game);
+                    // Check if current player has won after minimum 7 moves have been made
+                    if (game.Moves.Count >= 7)
+                    {
+                        winner = game.Winner(board, game.CurrentPlayer());
+                    }
                 }
                 catch (Exception e)
                 {
@@ -59,9 +69,14 @@ namespace ConnectFour
                     moveValid = false;
                 }
             }
-            // This while condition will eventually check for a win condition ("true == true" is just a placeholder)
-            while (!moveValid || true == true);
+            // Repeat while move is invalid or neither player has won
+            while (!moveValid || !winner);
             
+            if (winner)
+            {
+                // Display congratulatory message to winner
+                display.Winner(game.CurrentPlayer());
+            }
             Console.ReadLine();
         }
     }
