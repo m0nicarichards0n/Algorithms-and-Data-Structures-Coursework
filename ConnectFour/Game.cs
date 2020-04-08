@@ -7,6 +7,7 @@ namespace ConnectFour
     class Game
     {
         private Stack<KeyValuePair<Slot, Player>> _moves = new Stack<KeyValuePair<Slot, Player>>();
+        private Stack<KeyValuePair<Slot, Player>> _redoMoves = new Stack<KeyValuePair<Slot, Player>>();
         private Player[] _players = new Player[2];
         private int _firstPlayer;
 
@@ -258,17 +259,42 @@ namespace ConnectFour
             KeyValuePair<Slot, Player> move = new KeyValuePair<Slot, Player>(slot, player);
             _moves.Push(move);
         }
-
-
-        public void UndoMove()
+        
+        // Undo the last move made
+        public void UndoMove(Board board)
         {
-            if (_moves.Count != 0)
+            if (_moves.Count > 0)
             {
-                _moves.Pop();
+                // Transfer last move made from stack of game moves to 'redo' stack
+                KeyValuePair<Slot, Player> undoMove = _moves.Pop();
+                _redoMoves.Push(undoMove);
+
+                // Update position on board
+                string undoMoveLocation = undoMove.Key.XCoordinate.ToString().ToUpper() + undoMove.Key.YCoordinate.ToString();
+                board.Slots[undoMoveLocation].Content = 0;
             }
             else
             {
                 throw new Exception("No moves to undo!");
+            }
+        }
+
+        // Redo the last move undone
+        public void RedoMove(Board board)
+        {
+            if (_redoMoves.Count > 0)
+            {
+                // Transfer last move undone from 'redo' stack to stack of game moves made
+                KeyValuePair<Slot, Player> redoMove = _redoMoves.Pop();
+                _moves.Push(redoMove);
+
+                // Update position on board
+                string redoMoveLocation = redoMove.Key.XCoordinate.ToString().ToUpper() + redoMove.Key.YCoordinate.ToString();
+                board.Slots[redoMoveLocation].Content = PlayerNumber(redoMove.Value.Name);
+            }
+            else
+            {
+                throw new Exception("No moves to redo!");
             }
         }
 

@@ -20,7 +20,9 @@ namespace ConnectFour
         {
             Console.WriteLine("\n------ LET THE BATTLE COMMENCE ------\n\n" +
                                 game.Players[0].Name + " VS " + game.Players[1].Name + "\n\n" +
-                                "(To make a move, just type the letter of the column you want to fill)\n");
+                                "To make a move, just type the letter of the column you want to fill.\n" +
+                                "Enter 1 at any time to UNDO a move.\n" +
+                                "Enter 2 at any time to REDO a move.\n");
         }
 
         // Get player names from user
@@ -180,6 +182,28 @@ namespace ConnectFour
                 // Add move to stack
                 Slot move = game.NextAvailableSlot(input, board);
                 game.MakeMove(move, currentPlayer, board);
+            }
+            else if (input == "1")
+            {
+                try
+                {
+                    game.UndoMove(board);
+                }
+                catch(Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+            else if (input == "2")
+            {
+                try
+                {
+                    game.RedoMove(board);
+                }
+                catch(Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
             }
             else
             {
