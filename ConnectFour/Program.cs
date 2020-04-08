@@ -26,8 +26,8 @@ namespace ConnectFour
                 try
                 {
                     // Establish size of board - user enters custom height/width
-                    int height = display.GetBoardSize("Board height (1 - 26): ");
-                    int width = display.GetBoardSize("Board width (1 - 26): ");
+                    int height = display.GetBoardSize("Board height (4 - 26): ");
+                    int width = display.GetBoardSize("Board width (4 - 26): ");
                 
                     // Initialise and display board
                     board.InitBoard(height, width);
