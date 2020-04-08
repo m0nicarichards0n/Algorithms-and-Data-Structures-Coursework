@@ -20,7 +20,7 @@ namespace ConnectFour
         {
             Console.WriteLine("\n------ LET THE BATTLE COMMENCE ------\n\n" +
                                 game.Players[0].Name + " VS " + game.Players[1].Name + "\n\n" +
-                                "(To make a move, just type the letter of the column you want to fill)\n" +
+                                "To make a move, just type the letter of the column you want to fill.\n" +
                                 "Enter 1 at any time to UNDO a move.\n" +
                                 "Enter 2 at any time to REDO a move.\n");
         }
