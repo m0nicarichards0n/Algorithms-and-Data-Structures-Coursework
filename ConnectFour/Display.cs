@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Pastel;
 
 namespace ConnectFour
@@ -10,10 +11,40 @@ namespace ConnectFour
         {
             Console.WriteLine("-------------------------------------\n" +
                                 "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n" +
-                                "~*~*~*~*~*~ CONNECT FOUR ~*~*~*~*~*~\n" + 
+                                "~*~*~*~*~*~ CONNECT FOUR ~*~*~*~*~*~\n" +
                                 "~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~\n" +
                                 "-------------------------------------\n\n" +
-                                "Welcome to Connect Four!\n\n"); 
+                                "Welcome to Connect Four!\n");
+        }
+
+        public void StartMenu()
+        {
+            Console.WriteLine("Select an option:\n" +
+                                "1. Start New Game\n" +
+                                "2. Replay Previous Game\n");
+        }
+
+        public int GetStartMenuSelection()
+        {
+            bool validInt;
+            int userInput;
+
+            validInt = Int32.TryParse(Console.ReadLine(), out userInput);
+            if (validInt)
+            {
+                if (userInput == 1 || userInput == 2)
+                {
+                    return userInput;
+                }
+                else
+                {
+                    throw new Exception("Please select a valid option from the menu.");
+                }
+            }
+            else
+            {
+                throw new Exception("Please select a valid option from the menu.");
+            }
         }
 
         public void GameHeader(Game game)
@@ -61,16 +92,16 @@ namespace ConnectFour
         }
 
         // Print formatted board in its current state
-        public void PrintBoard(Board board)
+        public void PrintBoard(Game game)
         {
             // Array to store each formatted row in the board
-            string[] rows = new string[board.Height];
+            string[] rows = new string[game.Board.Height];
             string bottomRow = "";
             int row = 0;
 
             // Get height (1-26) and width (A-Z) values of board depending on custom height/width
-            char[] xAxis = board.GetXAxis(board.Width);
-            int[] yAxis = board.GetYAxis(board.Height);
+            char[] xAxis = game.Board.GetXAxis(game.Board.Width);
+            int[] yAxis = game.Board.GetYAxis(game.Board.Height);
             
             Console.WriteLine("");
             
@@ -78,7 +109,7 @@ namespace ConnectFour
             foreach (int y in yAxis)
             {
                 // Array to store all slots in that row
-                Slot[] rowSlots = new Slot[board.Width];
+                Slot[] rowSlots = new Slot[game.Board.Width];
                 int column = 0;
                 // String to build formatted row
                 string printLine = "";
@@ -103,7 +134,7 @@ namespace ConnectFour
                 foreach (Slot rowSlot in rowSlots)
                 {
                     Slot slot;
-                    if (board.Slots.TryGetValue((rowSlot.XCoordinate.ToString() + rowSlot.YCoordinate), out slot))
+                    if (game.Board.Slots.TryGetValue((rowSlot.XCoordinate.ToString() + rowSlot.YCoordinate), out slot))
                     {
                         // Player 1 slots are yellow
                         if (slot.Content == 1)
@@ -155,7 +186,7 @@ namespace ConnectFour
         }
 
         // Allow player to enter move and update board accordingly
-        public void PlayMove(Board board, Game game)
+        public void PlayMove(Game game)
         {
             Player currentPlayer;
             string input = "";
@@ -177,17 +208,17 @@ namespace ConnectFour
                 input = Console.ReadLine();
             }
             // Check move is valid
-            if (game.ValidMove(input, board))
+            if (game.ValidMove(input))
             {
                 // Add move to stack
-                Slot move = game.NextAvailableSlot(input, board);
-                game.MakeMove(move, currentPlayer, board);
+                Slot move = game.NextAvailableSlot(input);
+                game.MakeMove(move, currentPlayer);
             }
             else if (input == "1")
             {
                 try
                 {
-                    game.UndoMove(board);
+                    game.UndoMove();
                 }
                 catch(Exception e)
                 {
@@ -198,7 +229,7 @@ namespace ConnectFour
             {
                 try
                 {
-                    game.RedoMove(board);
+                    game.RedoMove();
                 }
                 catch(Exception e)
                 {
@@ -212,18 +243,113 @@ namespace ConnectFour
         }
 
         // Remove the board from console and print latest version of board
-        public void UpdateBoard(Board board, Game game)
+        public void UpdateBoard(Game game)
         {
             Console.Clear();
             Welcome();
             GameHeader(game);
-
-            PrintBoard(board);
+            PrintBoard(game);
         }
 
+        // Display congratulatory message to game winner, before returning to main menu on key press
         public void Winner(Player winner)
         {
-            Console.WriteLine("\nCongratulations " + winner.Name + " you WIN !!!");
+            Console.WriteLine("\nCongratulations " + winner.Name + " you WIN !!!\n"
+                            + "Press any key to continue...");
+            Console.ReadKey();
+            // Return to main menu
+            Console.Clear();
+            Welcome();
+            StartMenu();
+        }
+
+        // Allow user to select a previous game and replay it
+        public void ReplayGame(List<Game> games)
+        {
+            if (games.Count > 0)
+            {
+                int count = 0;
+                int gameToReplay;
+                bool validInt;
+
+                Console.Clear();
+                Welcome();
+
+                // Display list of previous games
+                Console.WriteLine("Which game do you want to replay?\n");
+                foreach (Game game in games)
+                {
+                    count++;
+                    Console.WriteLine(count + ". " + game.Players[0].Name + " vs. " + game.Players[1].Name + "\n");
+                }
+
+                // Get user selection
+                validInt = Int32.TryParse(Console.ReadLine(), out gameToReplay);
+                if (validInt)
+                {
+                    if (gameToReplay > 0 && gameToReplay <= games.Count)
+                    {
+                        // Identify the game they wish to replay
+                        Game replay = games[gameToReplay - 1];
+                        Stack<KeyValuePair<Slot,Player>> replayMoves = ReverseMoves(replay.Moves);
+
+                        // Clear the game board
+                        foreach (KeyValuePair<string, Slot> slot in replay.Board.Slots)
+                        {
+                            slot.Value.Content = 0;
+                        }
+
+                        // Reset console
+                        Console.Clear();
+                        Welcome();
+                        Console.WriteLine("--- LIVE ACTION REPLAY ---\n"
+                                        + replay.Players[0].Name + " VS. " + replay.Players[1].Name);
+                        PrintBoard(replay);
+
+                        // Replay game
+                        foreach (KeyValuePair<Slot, Player> move in replayMoves)
+                        {
+                            Console.Clear();
+                            Welcome();
+                            Console.WriteLine("--- LIVE ACTION REPLAY ---\n"
+                                        + replay.Players[0].Name + " VS. " + replay.Players[1].Name);
+                            replay.MakeMove(move.Key, move.Value);
+                            PrintBoard(replay);
+                            System.Threading.Thread.Sleep(500);
+                        }
+
+                        Console.WriteLine("\n" + replay.Moves.Peek().Value.Name + " won!");
+                        Console.WriteLine("\nPress any key to continue...");
+                        Console.ReadKey();
+                        // Return to main menu
+                        Console.Clear();
+                        Welcome();
+                        StartMenu();
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid menu selection.");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Invalid menu selection.");
+                }
+            }
+            else
+            {
+                throw new Exception("No previous games to replay");
+            }
+        }
+
+        public Stack<KeyValuePair<Slot, Player>> ReverseMoves(Stack<KeyValuePair<Slot, Player>> moves)
+        {
+            Stack<KeyValuePair<Slot, Player>> reverse = new Stack<KeyValuePair<Slot, Player>>();
+            foreach(KeyValuePair<Slot, Player> move in moves)
+            {
+                reverse.Push(move);
+            }
+            return reverse;
         }
     }
 }

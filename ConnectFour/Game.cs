@@ -9,6 +9,7 @@ namespace ConnectFour
         private Stack<KeyValuePair<Slot, Player>> _moves = new Stack<KeyValuePair<Slot, Player>>();
         private Stack<KeyValuePair<Slot, Player>> _redoMoves = new Stack<KeyValuePair<Slot, Player>>();
         private Player[] _players = new Player[2];
+        private Board _board = new Board();
         private int _firstPlayer;
 
         public Game(Player player1, Player player2)
@@ -18,7 +19,7 @@ namespace ConnectFour
         }
 
         // Establish whether a player has won based on last move made
-        public bool Winner(Board board, Player player)
+        public bool Winner (Player player)
         {
             char x = char.ToUpper(_moves.Peek().Key.XCoordinate);
             int y = _moves.Peek().Key.YCoordinate;
@@ -40,53 +41,53 @@ namespace ConnectFour
 
                 char something = ((char)((int)x + i));
 
-                if (((int)x+i) >= 65 && ((int)x + i) <= (64 + board.Width) 
-                    && (y + i) > 0 && (y + i) <= board.Height)
+                if (((int)x+i) >= 65 && ((int)x + i) <= (64 + _board.Width) 
+                    && (y + i) > 0 && (y + i) <= _board.Height)
                 {
                     A = ((char)((int)x + i)).ToString() + (y + i);
                     diagonalSlotsA.Add(3 + i, A);
                 }
 
-                if (((int)x - i) >= 65 && ((int)x - i) <= (64 + board.Width)
-                    && (y - i) > 0 && (y - i) <= board.Height)
+                if (((int)x - i) >= 65 && ((int)x - i) <= (64 + _board.Width)
+                    && (y - i) > 0 && (y - i) <= _board.Height)
                 {
                     B = ((char)((int)x - i)).ToString() + (y - i);
                     diagonalSlotsA.Add(3 - i, B);
                 }
 
-                if (((int)x - i) >= 65 && ((int)x - i) <= (64 + board.Width)
-                    && (y + i) > 0 && (y + i) <= board.Height)
+                if (((int)x - i) >= 65 && ((int)x - i) <= (64 + _board.Width)
+                    && (y + i) > 0 && (y + i) <= _board.Height)
                 {
                     C = ((char)((int)x - i)).ToString() + (y + i);
                     diagonalSlotsB.Add(3 - i, C);
                 }
 
-                if (((int)x + i) >= 65 && ((int)x + i) <= (64 + board.Width)
-                    && (y - i) > 0 && (y - i) <= board.Height)
+                if (((int)x + i) >= 65 && ((int)x + i) <= (64 + _board.Width)
+                    && (y - i) > 0 && (y - i) <= _board.Height)
                 {
                     D = ((char)((int)x + i)).ToString() + (y - i);
                     diagonalSlotsB.Add(3 + i, D);
                 }
 
-                if ((y + i) > 0 && (y + i) <= board.Height)
+                if ((y + i) > 0 && (y + i) <= _board.Height)
                 {
                     E = x.ToString() + (y + i);
                     horizontalSlots.Add(3 + i, E);
                 }
 
-                if ((y - i) > 0 && (y - i) <= board.Height)
+                if ((y - i) > 0 && (y - i) <= _board.Height)
                 {
                     F = x.ToString() + (y - i);
                     horizontalSlots.Add(3 - i, F);
                 }
 
-                if (((int)x - i) >= 65 && ((int)x - i) <= (64 + board.Width))
+                if (((int)x - i) >= 65 && ((int)x - i) <= (64 + _board.Width))
                 {
                     G = ((char)((int)x - i)).ToString() + y;
                     verticalSlots.Add(3 - i, G);
                 }
 
-                if (((int)x + i) >= 65 && ((int)x + i) <= (64 + board.Width))
+                if (((int)x + i) >= 65 && ((int)x + i) <= (64 + _board.Width))
                 {
                     H = ((char)((int)x + i)).ToString() + y;
                     verticalSlots.Add(3 + i, H);
@@ -94,10 +95,10 @@ namespace ConnectFour
             }
                 
             // Check if four consecutive slots have been filled by player
-            if (FourInARow(diagonalSlotsA, board, player)
-                || FourInARow(diagonalSlotsB, board, player)
-                || FourInARow(horizontalSlots, board, player)
-                || FourInARow(verticalSlots, board, player))
+            if (FourInARow(diagonalSlotsA, player)
+                || FourInARow(diagonalSlotsB, player)
+                || FourInARow(horizontalSlots, player)
+                || FourInARow(verticalSlots, player))
             {
                 return true;
             }
@@ -108,7 +109,7 @@ namespace ConnectFour
         }
 
         // Establish whether 4 consecutive slots have been populated by player
-        public bool FourInARow(SortedList checkSlots, Board board, Player player)
+        public bool FourInARow(SortedList checkSlots, Player player)
         {
             bool fourUp = false;
             try
@@ -117,13 +118,13 @@ namespace ConnectFour
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        if (board.Slots[checkSlots.GetByIndex(i).ToString()].Content == PlayerNumber(player.Name))
+                        if (_board.Slots[checkSlots.GetByIndex(i).ToString()].Content == PlayerNumber(player.Name))
                         {
-                            if (board.Slots[checkSlots.GetByIndex(i + 1).ToString()].Content == PlayerNumber(player.Name))
+                            if (_board.Slots[checkSlots.GetByIndex(i + 1).ToString()].Content == PlayerNumber(player.Name))
                             {
-                                if (board.Slots[checkSlots.GetByIndex(i + 2).ToString()].Content == PlayerNumber(player.Name))
+                                if (_board.Slots[checkSlots.GetByIndex(i + 2).ToString()].Content == PlayerNumber(player.Name))
                                 {
-                                    if (board.Slots[checkSlots.GetByIndex(i + 3).ToString()].Content == PlayerNumber(player.Name))
+                                    if (_board.Slots[checkSlots.GetByIndex(i + 3).ToString()].Content == PlayerNumber(player.Name))
                                     {
                                         fourUp = true;
                                     }
@@ -141,11 +142,11 @@ namespace ConnectFour
         }
 
         // Establish whether or not the move entered by player is valid
-        public bool ValidMove(string move, Board board)
+        public bool ValidMove(string move)
         {
             bool validX = false;
             bool columnEmpty = false;
-            char[] xAxis = board.GetXAxis(board.Width);
+            char[] xAxis = _board.GetXAxis(_board.Width);
 
             // Ensure that only 1 character is entered
             if (move.Length == 1)
@@ -163,10 +164,10 @@ namespace ConnectFour
                 if (validX)
                 {
                     // Check that the column has empty slots
-                    for (int i = 0; i < board.Height; i++)
+                    for (int i = 0; i < _board.Height; i++)
                     {
                         string slot = x.ToString().ToUpper() + (i + 1).ToString();
-                        if (board.Slots[slot].Content == 0)
+                        if (_board.Slots[slot].Content == 0)
                         {
                             columnEmpty = true;
                         }
@@ -189,12 +190,12 @@ namespace ConnectFour
         }
 
         // Get coordinates of the next available slot in chosen column
-        public Slot NextAvailableSlot(string column, Board board)
+        public Slot NextAvailableSlot(string column)
         {
-            for (int i = 0; i < board.Height; i++)
+            for (int i = 0; i < _board.Height; i++)
             {
                 string slot = column.ToUpper() + (i + 1).ToString();
-                if (board.Slots[slot].Content == 0)
+                if (_board.Slots[slot].Content == 0)
                 {
                     Slot nextAvailable = new Slot(char.Parse(column), (i + 1));
                     return nextAvailable;
@@ -249,11 +250,11 @@ namespace ConnectFour
             return currentPlayer;
         }
         
-        public void MakeMove(Slot slot, Player player, Board board)
+        public void MakeMove(Slot slot, Player player)
         {
             // Update position on board
             string moveLocation = slot.XCoordinate.ToString().ToUpper() + slot.YCoordinate.ToString();
-            board.Slots[moveLocation].Content = PlayerNumber(player.Name);
+            _board.Slots[moveLocation].Content = PlayerNumber(player.Name);
 
             // Add to stack of game moves
             KeyValuePair<Slot, Player> move = new KeyValuePair<Slot, Player>(slot, player);
@@ -261,7 +262,7 @@ namespace ConnectFour
         }
         
         // Undo the last move made
-        public void UndoMove(Board board)
+        public void UndoMove()
         {
             if (_moves.Count > 0)
             {
@@ -271,7 +272,7 @@ namespace ConnectFour
 
                 // Update position on board
                 string undoMoveLocation = undoMove.Key.XCoordinate.ToString().ToUpper() + undoMove.Key.YCoordinate.ToString();
-                board.Slots[undoMoveLocation].Content = 0;
+                _board.Slots[undoMoveLocation].Content = 0;
             }
             else
             {
@@ -280,7 +281,7 @@ namespace ConnectFour
         }
 
         // Redo the last move undone
-        public void RedoMove(Board board)
+        public void RedoMove()
         {
             if (_redoMoves.Count > 0)
             {
@@ -290,12 +291,18 @@ namespace ConnectFour
 
                 // Update position on board
                 string redoMoveLocation = redoMove.Key.XCoordinate.ToString().ToUpper() + redoMove.Key.YCoordinate.ToString();
-                board.Slots[redoMoveLocation].Content = PlayerNumber(redoMove.Value.Name);
+                _board.Slots[redoMoveLocation].Content = PlayerNumber(redoMove.Value.Name);
             }
             else
             {
                 throw new Exception("No moves to redo!");
             }
+        }
+
+        public Board Board
+        {
+            get => _board;
+            set => _board = value;
         }
 
         public Player[] Players
