@@ -26,15 +26,15 @@ namespace ConnectFour
 
         public int GetStartMenuSelection()
         {
-            bool success;
-            int input;
+            bool validInt;
+            int userInput;
 
-            success = Int32.TryParse(Console.ReadLine(), out input);
-            if (success)
+            validInt = Int32.TryParse(Console.ReadLine(), out userInput);
+            if (validInt)
             {
-                if (input == 1 || input == 2)
+                if (userInput == 1 || userInput == 2)
                 {
-                    return input;
+                    return userInput;
                 }
                 else
                 {
@@ -270,7 +270,7 @@ namespace ConnectFour
             {
                 int count = 0;
                 int gameToReplay;
-                bool success;
+                bool validInt;
 
                 Console.Clear();
                 Welcome();
@@ -284,8 +284,8 @@ namespace ConnectFour
                 }
 
                 // Get user selection
-                success = Int32.TryParse(Console.ReadLine(), out gameToReplay);
-                if (success)
+                validInt = Int32.TryParse(Console.ReadLine(), out gameToReplay);
+                if (validInt)
                 {
                     if (gameToReplay > 0 && gameToReplay <= games.Count)
                     {
