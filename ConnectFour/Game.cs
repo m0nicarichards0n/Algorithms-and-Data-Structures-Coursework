@@ -24,6 +24,32 @@ namespace ConnectFour
             char x = char.ToUpper(_moves.Peek().Key.XCoordinate);
             int y = _moves.Peek().Key.YCoordinate;
 
+            SortedList[] surroundingSlots = GetSurroundingSlots(x,y);
+
+            SortedList diagonalSlotsA = surroundingSlots[0];
+            SortedList diagonalSlotsB = surroundingSlots[1];
+            SortedList horizontalSlots = surroundingSlots[2];
+            SortedList verticalSlots = surroundingSlots[3];
+
+            // Check if four consecutive slots have been filled by player
+            if (FourInARow(diagonalSlotsA, player)
+                || FourInARow(diagonalSlotsB, player)
+                || FourInARow(horizontalSlots, player)
+                || FourInARow(verticalSlots, player))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public SortedList[] GetSurroundingSlots(char x, int y)
+        {
+            x = char.ToUpper(x);
+            SortedList[] SurroundingSlots = new SortedList[4];
+
             SortedList diagonalSlotsA = new SortedList();
             SortedList diagonalSlotsB = new SortedList();
             SortedList horizontalSlots = new SortedList();
@@ -41,7 +67,7 @@ namespace ConnectFour
 
                 char something = ((char)((int)x + i));
 
-                if (((int)x+i) >= 65 && ((int)x + i) <= (64 + _board.Width) 
+                if (((int)x + i) >= 65 && ((int)x + i) <= (64 + _board.Width)
                     && (y + i) > 0 && (y + i) <= _board.Height)
                 {
                     A = ((char)((int)x + i)).ToString() + (y + i);
@@ -93,19 +119,13 @@ namespace ConnectFour
                     verticalSlots.Add(3 + i, H);
                 }
             }
-                
-            // Check if four consecutive slots have been filled by player
-            if (FourInARow(diagonalSlotsA, player)
-                || FourInARow(diagonalSlotsB, player)
-                || FourInARow(horizontalSlots, player)
-                || FourInARow(verticalSlots, player))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+
+            SurroundingSlots[0] = diagonalSlotsA;
+            SurroundingSlots[1] = diagonalSlotsB;
+            SurroundingSlots[2] = horizontalSlots;
+            SurroundingSlots[3] = verticalSlots;
+
+            return SurroundingSlots;
         }
 
         // Establish whether 4 consecutive slots have been populated by player
@@ -238,16 +258,15 @@ namespace ConnectFour
         // Establish current player based on last move
         public Player CurrentPlayer()
         {
-            Player currentPlayer = new Player("");
-            try
+            if (_moves.Count > 0)
             {
-                currentPlayer = _moves.Peek().Value;
-            }
-            catch
-            {
+                Player currentPlayer = _moves.Peek().Value;
                 return currentPlayer;
             }
-            return currentPlayer;
+            else
+            {
+                return null;
+            }
         }
         
         public void MakeMove(Slot slot, Player player)

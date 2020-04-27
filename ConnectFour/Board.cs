@@ -54,6 +54,21 @@ namespace ConnectFour
             return yAxis;
         }
 
+        // Establish whether or not the board is full (i.e. stalemate)
+        public bool Stalemate()
+        {
+            bool stalemate = true;
+            foreach(KeyValuePair<string, Slot> slot in _slots)
+            {
+                if (slot.Value.Content == 0)
+                {
+                    stalemate = false;
+                    return stalemate;
+                }
+            }
+            return stalemate;
+        }
+
         public int Height
         {
             get => _height;
