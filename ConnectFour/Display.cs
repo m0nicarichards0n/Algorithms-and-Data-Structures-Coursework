@@ -24,7 +24,7 @@ namespace ConnectFour
                                 "2. Replay Previous Game\n");
         }
 
-        public int GetStartMenuSelection()
+        public int GetMenuSelection()
         {
             bool validInt;
             int userInput;
@@ -47,6 +47,13 @@ namespace ConnectFour
             }
         }
 
+        public void AIMenu()
+        {
+            Console.WriteLine("Who would you like to play?\n"
+                            + "1. The computer\n"
+                            + "2. A friend\n");
+        }
+
         public void GameHeader(Game game)
         {
             Console.WriteLine("\n------ LET THE BATTLE COMMENCE ------\n\n" +
@@ -61,8 +68,15 @@ namespace ConnectFour
         {
             Console.WriteLine("Player " + playerNum + ", enter your name: ");
             string input = Console.ReadLine();
-            Player player = new Player(input);
-            return player;
+            if (input != "Computer")
+            {
+                Player player = new Player(input, false);
+                return player;
+            }
+            else
+            {
+                throw new Exception("Hey, that's my name! Get your own.");
+            }
         }
 
         // Get height/width of board from user
@@ -193,19 +207,40 @@ namespace ConnectFour
             // If this is the first move...
             if (game.Moves.Count == 0)
             {
+                // Establish first player...
                 currentPlayer = game.Players[game.FirstPlayer];
-                // Get player's first move
                 Console.WriteLine("\n" + currentPlayer.Name + " you are the chosen one! Make the first move...");
-                input = Console.ReadLine();
+
+                // If player is human...
+                if (currentPlayer.AI == false)
+                {
+                    // Get player's first move
+                    input = Console.ReadLine();
+                }
+                else if (currentPlayer.AI == true)
+                {
+                    // Get AI move
+                    input = currentPlayer.AIMove(game);
+                }
             }
             // If this is not the first move...
             else
             {
                 // Establish who the next player is
                 currentPlayer = game.NextPlayer();
-                // Get next player's move
-                Console.WriteLine("\n" + currentPlayer.Name + ", your turn! Make your move...");
-                input = Console.ReadLine();
+
+                // If player is human...
+                if (currentPlayer.AI == false)
+                {
+                    // Get next player's move
+                    Console.WriteLine("\n" + currentPlayer.Name + ", your turn! Make your move...");
+                    input = Console.ReadLine();
+                }
+                else if (currentPlayer.AI == true)
+                {
+                    // Get AI move
+                    input = currentPlayer.AIMove(game);
+                }
             }
             // Check move is valid
             if (game.ValidMove(input))
@@ -255,6 +290,17 @@ namespace ConnectFour
         public void Winner(Player winner)
         {
             Console.WriteLine("\nCongratulations " + winner.Name + " you WIN !!!\n"
+                            + "Press any key to continue...");
+            Console.ReadKey();
+            // Return to main menu
+            Console.Clear();
+            Welcome();
+            StartMenu();
+        }
+
+        public void Stalemate()
+        {
+            Console.WriteLine("\nBad luck, it's a DRAW!\n"
                             + "Press any key to continue...");
             Console.ReadKey();
             // Return to main menu
@@ -318,9 +364,18 @@ namespace ConnectFour
                             System.Threading.Thread.Sleep(500);
                         }
 
-                        Console.WriteLine("\n" + replay.Moves.Peek().Value.Name + " won!");
-                        Console.WriteLine("\nPress any key to continue...");
-                        Console.ReadKey();
+                        if (replay.Board.Stalemate())
+                        {
+                            Console.WriteLine("\nIt was a DRAW!");
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.WriteLine("\n" + replay.Moves.Peek().Value.Name + " won!");
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey();
+                        }
                         // Return to main menu
                         Console.Clear();
                         Welcome();
