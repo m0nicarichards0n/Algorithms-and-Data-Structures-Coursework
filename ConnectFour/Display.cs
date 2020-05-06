@@ -220,7 +220,7 @@ namespace ConnectFour
                 else if (currentPlayer.AI == true)
                 {
                     // Get AI move
-                    input = currentPlayer.AIMove(game);
+                    input = currentPlayer.AIMakeMove(game);
                 }
             }
             // If this is not the first move...
@@ -239,7 +239,7 @@ namespace ConnectFour
                 else if (currentPlayer.AI == true)
                 {
                     // Get AI move
-                    input = currentPlayer.AIMove(game);
+                    input = currentPlayer.AIMakeMove(game);
                 }
             }
             // Check move is valid
@@ -397,7 +397,7 @@ namespace ConnectFour
             }
         }
 
-        public Stack<KeyValuePair<Slot, Player>> ReverseMoves(Stack<KeyValuePair<Slot, Player>> moves)
+        private Stack<KeyValuePair<Slot, Player>> ReverseMoves(Stack<KeyValuePair<Slot, Player>> moves)
         {
             Stack<KeyValuePair<Slot, Player>> reverse = new Stack<KeyValuePair<Slot, Player>>();
             foreach(KeyValuePair<Slot, Player> move in moves)
