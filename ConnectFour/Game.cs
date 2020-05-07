@@ -147,6 +147,7 @@ namespace ConnectFour
                                     if (_board.Slots[checkSlots.GetByIndex(i + 3).ToString()].Content == PlayerNumber(player.Name))
                                     {
                                         fourUp = true;
+                                        return fourUp;
                                     }
                                 }
                             }
