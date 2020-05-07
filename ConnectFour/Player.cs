@@ -7,27 +7,27 @@ namespace ConnectFour
 {
     class Player
     {
-        private string name;
-        private bool ai;
+        private string _name;
+        private bool _ai;
 
         public Player (string name, bool AI)
         {
-            this.name = name;
-            this.ai = AI;
+            _name = name;
+            _ai = AI;
         }
 
         public string Name
         {
-            get => name;
+            get => _name;
         }
 
         public bool AI
         {
-            get => this.ai;
+            get => _ai;
         }
 
         // AI chooses move to make - either based on last move made, or picks move at random
-        public string AIMove(Game game)
+        public string AIMakeMove(Game game)
         {
             Random random = new Random();
             string move = "";
@@ -59,7 +59,7 @@ namespace ConnectFour
         // Establish the move(s) which will a) best prevent the opponent from winning
         // or b) build on a move previously made by the AI, and pick one at random. 
         // If neither of these types of move can be identified, pick a random move.
-        public char AIEstablishBestMove(Game game, SortedList[] surroundingSlots)
+        private char AIEstablishBestMove(Game game, SortedList[] surroundingSlots)
         {
             Random random = new Random();
             char[] xAxis = game.Board.GetXAxis(game.Board.Width);
@@ -88,7 +88,7 @@ namespace ConnectFour
 
                     bool blocksOpponent = false;
 
-                    game.Board.Slots[potentialMove.XCoordinate.ToString() + potentialMove.YCoordinate].Content = game.PlayerNumber(opponent.name);
+                    game.Board.Slots[potentialMove.XCoordinate.ToString() + potentialMove.YCoordinate].Content = game.PlayerNumber(opponent._name);
 
                     SortedList[] surroundingNextMove = game.GetSurroundingSlots(x, y);
 
@@ -190,24 +190,6 @@ namespace ConnectFour
             }
 
             return ' ';
-        }
-
-        public int CountOpponentSlots(Game game, SortedList slotsToCheck)
-        {
-            // Establish who opponent is
-            Player opponent = game.Moves.Peek().Value;
-
-            // Count number of slots populated by opponent
-            int opponentSlotCount = 0;
-            for (int i = 0; i < slotsToCheck.Count; i++)
-            {
-                if (game.Board.Slots[slotsToCheck.GetByIndex(i).ToString()].Content == game.PlayerNumber(opponent.name))
-                {
-                    opponentSlotCount++;
-                }
-            }
-
-            return opponentSlotCount;
         }
     }
 }

@@ -10,7 +10,6 @@ namespace ConnectFour
             List<Game> games = new List<Game>();
             Display display = new Display();
             bool boardSizeValid = true;
-            bool moveValid = true;
             bool startMenuValid = true;
             bool aiMenuValid = true;
             bool validPlayerName = true;
