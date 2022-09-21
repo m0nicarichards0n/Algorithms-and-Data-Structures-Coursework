@@ -14,7 +14,7 @@ The minimum requirement was a Connect Four game playable by two players. To earn
 
 For additional marks (80%+), we were encouraged to go beyond scope and be creative. For this, I implemented an AI player and the option to customise the size of the board.
 
-Here's my report:
+Here's the report I submitted alongside the game in which I justify my chosen data structures, explain my algorithms and attempt to evaluate their performance:
 
 [SET09417-40338729-Report.pdf](https://github.com/m0nicarichards0n/richardson_monica_ads/files/9620308/SET09417-40338729-Report.pdf)
 
