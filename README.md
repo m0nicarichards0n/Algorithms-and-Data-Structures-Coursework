@@ -1,5 +1,4 @@
 # Connect Four
-Connect Four coursework submission for SET09417 Algorithms and Data Structures coursework
 
 This is the coursework I submited for my third year 'Algorithms and Data Structures' module - I received a grade (with merit) of 80.8%
 
