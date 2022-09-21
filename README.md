@@ -16,6 +16,6 @@ For additional marks (80%+), we were encouraged to go beyond scope and be creati
 
 Here's my report:
 
-
+[SET09417-40338729-Report.pdf](https://github.com/m0nicarichards0n/richardson_monica_ads/files/9620308/SET09417-40338729-Report.pdf)
 
 For executables see ConnectFour > EXE-Mac or ConnectFour > EXE-Windows
